@@ -4,6 +4,8 @@ const email = document.getElementById('email');
 const asunto = document.getElementById('asunto');
 const mensaje = document.getElementById('mensaje');
 const btnEnviar = document.getElementById('enviar');
+const formEnviar = document.getElementById('enviar-mail');
+const btnReset = document.getElementById('resetBtn');
 
 // Event Listeners
 
@@ -16,6 +18,10 @@ function eventListeners() {
     email.addEventListener('blur', validarCampo);
     asunto.addEventListener('blur', validarCampo);
     mensaje.addEventListener('blur', validarCampo);
+    // Enviar formulario
+    formEnviar.addEventListener('submit', enviarEmail);
+    // Boton reset
+    btnReset.addEventListener('click' , resetarForm)
 }
 
 // Funciones
@@ -24,8 +30,6 @@ function inicioApp() {
     // Deshabilitar el envio
     btnEnviar.disabled = true;
 }
-
-// Validaciones
 
 function validarCampo() {
     // Validar longitud del campo y que no este vacío
@@ -36,10 +40,41 @@ function validarCampo() {
     }
     // Manejar errores
     let errores = document.querySelectorAll('.error');
-    if (errores.length === 0) {
-        btnEnviar.disabled = false;
-    }
+    if (email.value !== '' && asunto.value !== '' && mensaje.value !== '') {
+        if (errores.length === 0) {
+            btnEnviar.disabled = false;
+        }
+    }   
 }
+
+function enviarEmail(e) {
+    // Mostrar spinner al presion Enviar
+    const spinnerGif = document.querySelector('#spinner');
+    spinnerGif.style.display = 'block';
+    // Crea gif de mensaje enviado
+    const enviado = document.createElement('img');
+    enviado.src = 'img/mail.gif';
+    enviado.style.display = 'block';
+    // Ocultar spinner y mostrar gif de email enviado
+    setTimeout(function() {
+        spinnerGif.style.display = 'none';
+        document.querySelector('#loaders').appendChild(enviado);
+        // Borrar gif de emial enviado y resetear formulario
+        setTimeout(function() {
+            enviado.remove();
+            formEnviar.reset();
+            inicioApp();
+        },5000);
+    }, 3000);
+    e.preventDefault();
+}
+
+function resetarForm(e) {
+    formEnviar.reset();
+    e.preventDefault();
+}
+
+// Validaciones
 
 function validarLongitud(campo) {
     if (campo.value.length > 0) {
